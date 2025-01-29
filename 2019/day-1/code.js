@@ -1,6 +1,10 @@
 import { masses } from "./input.js";
 
-const fuelRequired = (mass) => Math.floor(mass / 3) - 2;
+const fuelRequired = (mass) => {
+  const fuel = Math.floor(mass / 3) - 2;
+  if (fuel <= 0) return 0;
+  return fuel + fuelRequired(fuel);
+};
 
 const add = (addend, augend) => addend + augend;
 
