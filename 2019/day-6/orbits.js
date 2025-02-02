@@ -13,7 +13,6 @@ const totalOrbits = (orbits) => {
   for (const [center, orbit] of orbits) {
     orbitMap[orbit] = center;
   }
-  console.log(orbitMap);
 
   const indirect = indirectOrbits.bind(null, orbitMap);
 
@@ -62,5 +61,5 @@ const orbits = Deno.readTextFileSync("./day-6/input.txt")
   .split("\n")
   .map((o) => o.split(")"));
 
-// console.log(totalOrbits(orbits));
+console.log(totalOrbits(orbits));
 console.log(minimumTransfer(orbits));
