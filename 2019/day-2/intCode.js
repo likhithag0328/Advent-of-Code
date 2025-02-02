@@ -1,4 +1,3 @@
-import { data } from "./input.js";
 class Interpret {
   #code;
   constructor(data) {
@@ -56,7 +55,9 @@ class Interpret {
 }
 const main = (data) => {
   const intCode = new Interpret(data);
-  return intCode.deCode(19690720);
+  return intCode.execute(12, 2);
+  // return intCode.deCode(19690720);
 };
 
+const data = Deno.readTextFileSync("./day-2/input.txt").split(",").map(Number);
 console.log(main(data));
