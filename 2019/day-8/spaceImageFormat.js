@@ -13,7 +13,7 @@ const indexOfMin = (arr) => {
   return arr.indexOf(minValue);
 };
 
-const findLayer = (layers, layerLength) => {
+const findLayer = (layers) => {
   const zeroes = layers.map(count(0));
   const fewestZeroes = indexOfMin(zeroes);
   const layer = layers[fewestZeroes];
@@ -51,7 +51,7 @@ const main = () => {
   const layers = Array.from({ length: 100 }, (_, index) => index).map(
     allLayers(data, layerLength),
   );
-  console.log(findLayer(layers, layerLength));
+  console.log(findLayer(layers));
   console.log(
     format(decode(layers), width, height).replaceAll(1, "|").replaceAll(0, " "),
   );
