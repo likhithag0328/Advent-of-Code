@@ -46,7 +46,6 @@ const calculateAngle = (y1, x1, y2, x2) => {
 const allAngles = (monitor, map) => {
   const [y, x] = monitor;
 
-  // Filter out the monitor's own position
   const filteredArr = map.filter((subArray) =>
     !(subArray[0] === y && subArray[1] === x)
   );
@@ -58,7 +57,7 @@ const allAngles = (monitor, map) => {
   });
 
   const ordered = groupBy(visibility);
-  vaporize(ordered, monitor);
+  return ordered;
 };
 
 const groupBy = (arr) => {
@@ -70,49 +69,42 @@ const groupBy = (arr) => {
     map.set(angle, value);
   });
 
-  // Sort each group by distance (ascending)
-  map.forEach((value, angle) => {
-    value.sort((a, b) => a[1] - b[1]); // Sort by distance
+  map.forEach((value) => {
+    value.sort((a, b) => a[1] - b[1]);
   });
 
-  // Sort the entire map by angle
   const sortedMap = new Map([...map.entries()].sort((a, b) => a[0] - b[0]));
   return sortedMap;
 };
 
-const deleteIfEmpty = (arr) => arr.filter((item) => item[1].length === 0);
-
-const vaporize = (map, monitor) => {
-  const result = [];
-  let arr = [...map.entries()];
+const vaporize = (ordered) => {
   let vaporized = 0;
+  let angleIndex = 0;
 
   while (vaporized < 200) {
-    arr.forEach(([angle, coordinates]) => {
-      if (coordinates.length > 0) {
-        // Vaporize the closest asteroid (first in the sorted list)
-        const asteroid = coordinates.shift();
-        result.push(asteroid);
-        vaporized++;
+    const currentAngle = [...ordered.keys()][angleIndex];
+    const asteroidsAtAngle = ordered.get(currentAngle);
 
-        // If we've reached the 200th asteroid, output its position
-        if (vaporized === 200) {
-          const [y, x] = asteroid[0];
-          console.log(`200th asteroid: ${x * 100 + y}`); // Output as requested
-        }
+    if (asteroidsAtAngle && asteroidsAtAngle.length > 0) {
+      const asteroid = asteroidsAtAngle.shift();
+      vaporized++;
+
+      if (vaporized === 200) {
+        const [y, x] = asteroid[0];
+        return x * 100 + y;
       }
-    });
+    }
 
-    // Clean up any empty angle groups
-    arr = deleteIfEmpty(arr);
+    angleIndex = (angleIndex + 1) % ordered.size;
   }
-
-  console.log(result);
 };
+
 const map = Deno.readTextFileSync("./day-10/input.txt").split("\n").map((l) =>
   l.split("")
 );
 
 const [monitor, value] = main(map);
 console.log(monitor, value);
-const allAsteroids = allAngles(monitor, asteroidIndices(map));
+const ordered = allAngles(monitor, asteroidIndices(map));
+const result = vaporize(ordered);
+console.log(result);
